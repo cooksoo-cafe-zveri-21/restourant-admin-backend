@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Categories {
+  id Int @id @default(autoincrement())
+
+  name String
+  description String
+  imageURL String?
+
+  dish Dishes[]
+}
+
+model TypeOrders {
+  id Int @id @default(autoincrement())
+
+  typeOfOrder String
+
+  order Orders[]
+}
+
+model Branches {
+  id Int @id @default(autoincrement())
+
+  address String
+  timeWorkStart String
+  timeWorkEnd String
+
+  order Orders[]
+}
+
+model Promocodes {
+  id Int @id @default(autoincrement())
+
+  name String
+  discount Float
+
+  order Orders[]
+}
+
+model Curiers {
+  id Int @id @default(autoincrement())
+
+  name String
+  surname String
+  age Int?
+  email String @unique
+  experienceWork Int?
+
+  order Orders[]
+}
+
+model Dishes {
+  id Int @id @default(autoincrement())
+
+  name String
+  description String?
+  price Int 
+  imageURL String?
+
+  categoryId Int 
+  category Categories @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  connDishesOrders connDishesOrders[]
+}
+
+model Orders {
+  id Int @id @default(autoincrement())
+
+  branchId Int 
+  branch Branches @relation(fields: [branchId], references: [id], onDelete: Cascade)
+
+  typeOrderId Int 
+  typeOrder TypeOrders @relation(fields: [typeOrderId], references: [id])
+
+  curierId Int
+  curier Curiers @relation(fields: [curierId], references: [id])
+
+  promocodeId Int 
+  promocode Promocodes @relation(fields: [promocodeId], references: [id])
+
+  connDishesOrders connDishesOrders[]
+
+}
+
+model connDishesOrders {
+  id Int @id @default(autoincrement())
+
+  dishId Int 
+  dish Dishes @relation(fields: [dishId], references: [id], onDelete: Cascade)
+
+  orderId Int 
+  order Orders @relation(fields: [orderId], references: [id])
+}

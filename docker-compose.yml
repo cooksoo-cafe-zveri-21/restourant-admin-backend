@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  dev-db:
+    image: postgres:16
+    ports: 
+      - 5431:5432
+    environment:
+      POSTGRES_USER: bars
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_DB: nestjs
